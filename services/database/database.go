@@ -13,17 +13,17 @@ var db *sql.DB
 
 func Connect() (*sql.DB, error) {
 	cfg := mysql.NewConfig()
-    cfg.User = os.Getenv("DB_USER")
-    cfg.Passwd = os.Getenv("DB_PASSWORD")
-    cfg.Net = "tcp"
-    cfg.Addr = os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT")
-    cfg.DBName = os.Getenv("DB_NAME")
-	
+	cfg.User = os.Getenv("DB_USER")
+	cfg.Passwd = os.Getenv("DB_PASSWORD")
+	cfg.Net = "tcp"
+	cfg.Addr = os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT")
+	cfg.DBName = os.Getenv("DB_NAME")
+
 	var err error
-    db, err = sql.Open("mysql", cfg.FormatDSN())
-    if err != nil {
-        log.Fatal(err)
-    }
+	db, err = sql.Open("mysql", cfg.FormatDSN())
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	db.SetMaxOpenConns(25)
 	db.SetMaxIdleConns(5)
