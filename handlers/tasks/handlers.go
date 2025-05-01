@@ -1,4 +1,4 @@
-package tasks
+package handlers
 
 import (
 	"database/sql"
@@ -7,11 +7,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	task "github.com/DanielK_v/taskGrader/models/tasks"
+	"github.com/DanielK_v/taskGrader/models/tasks"
 )
 
 func GetAllTasks(context *gin.Context) {
-	tasks, err := task.GetAllTasks()
+	tasks, err := models.GetAllTasks()
 	if err != nil {
 		context.JSON(
 			http.StatusInternalServerError,
@@ -33,7 +33,7 @@ func GetTaskById(context *gin.Context) {
 		return
 	}
 
-	task, err := task.GetTaskById(id)
+	task, err := models.GetTaskById(id)
 
 	if err == sql.ErrNoRows {
 		context.JSON(
@@ -52,13 +52,13 @@ func GetTaskById(context *gin.Context) {
 }
 
 func AddTask(context *gin.Context) {
-	var task task.Task
+	var task models.Task
 	if err := context.ShouldBindJSON(&task); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
 	}
 
-	newTask, err := task.AddTask(task)
+	newTask, err := models.AddTask(task)
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add task"})
@@ -79,7 +79,7 @@ func DeleteTask(context *gin.Context) {
 		return
 	}
 
-	err := task.DeleteTask(id)
+	err := models.DeleteTask(id)
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Something went wrong! Could not delete task"})

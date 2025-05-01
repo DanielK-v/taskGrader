@@ -21,14 +21,8 @@ func New(id uint64, name string, rating uint64) *Task {
 	}
 }
 
-func (t Task) AddTask(task Task) (*Task, error) {
-	connection, errCon := database.Connect()
-
-	if errCon != nil {
-		return nil, errCon
-	}
-
-	_, err := connection.Exec("INSERT INTO `tasks` (`name`, `rating`) VALUES (?, ?)", task.Name, task.Rating)
+func AddTask(task Task) (*Task, error) {
+	_, err := database.Db.Exec("INSERT INTO `tasks` (`name`, `rating`) VALUES (?, ?)", task.Name, task.Rating)
 
 	if err != nil {
 		return nil, err
@@ -43,8 +37,6 @@ func GetAllTasks() ([]Task, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	tasks := make([]Task, 0)
 
