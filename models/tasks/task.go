@@ -34,26 +34,17 @@ func (t Task) AddTask(task Task) (*Task, error) {
 		return nil, err
 	}
 
-	defer connection.Close()
-
 	return &task, nil
 }
 
 func GetAllTasks() ([]Task, error) {
-	connection, errCon := database.Connect()
-
-	if errCon != nil {
-		panic(errCon)
-	}
-
-	rows, err := connection.Query("SELECT * FROM `tasks`")
+	rows, err := database.Db.Query("SELECT * FROM `tasks`")
 
 	if err != nil {
 		return nil, err
 	}
 
 	defer rows.Close()
-	defer connection.Close()
 
 	tasks := make([]Task, 0)
 
@@ -75,14 +66,7 @@ func GetAllTasks() ([]Task, error) {
 }
 
 func GetTaskById(id uint64) (*Task, error) {
-	connection, errCon := database.Connect()
-
-	if errCon != nil {
-		panic(errCon)
-	}
-
-	row := connection.QueryRow("SELECT * FROM `tasks` WHERE id = ?", id)
-	defer connection.Close()
+	row := database.Db.QueryRow("SELECT * FROM `tasks` WHERE id = ?", id)
 
 	var task Task
 	err := row.Scan(&task.Id, &task.Name, &task.Rating)
@@ -95,14 +79,7 @@ func GetTaskById(id uint64) (*Task, error) {
 }
 
 func DeleteTask(id uint64) error {
-	connection, errCon := database.Connect()
-
-	if errCon != nil {
-		panic(errCon)
-	}
-
-	_, err := connection.Exec("DELETE FROM `tasks` WHERE id = ?", id)
-	defer connection.Close()
+	_, err := database.Db.Exec("DELETE FROM `tasks` WHERE id = ?", id)
 
 	if err != nil {
 		return err
@@ -112,14 +89,7 @@ func DeleteTask(id uint64) error {
 }
 
 func UpdateTask(task *Task) error {
-	connection, errCon := database.Connect()
-
-	if errCon != nil {
-		panic(errCon)
-	}
-
-	_, err := connection.Exec("UPDATE `tasks` SET name = ?, rating = ? WHERE id = ?", task.Name, task.Rating, task.Id)
-	defer connection.Close()
+	_, err := database.Db.Exec("UPDATE `tasks` SET name = ?, rating = ? WHERE id = ?", task.Name, task.Rating, task.Id)
 
 	if err != nil {
 		return err

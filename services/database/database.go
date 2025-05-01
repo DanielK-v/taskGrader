@@ -9,7 +9,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
-var db *sql.DB
+var Db *sql.DB
 
 func Connect() (*sql.DB, error) {
 	cfg := mysql.NewConfig()
@@ -20,22 +20,16 @@ func Connect() (*sql.DB, error) {
 	cfg.DBName = os.Getenv("DB_NAME")
 
 	var err error
-	db, err = sql.Open("mysql", cfg.FormatDSN())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	db.SetMaxOpenConns(25)
-	db.SetMaxIdleConns(5)
-	db.SetConnMaxLifetime(time.Hour)
-
+	Db, err = sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
 		return nil, err
 	}
 
-	if err = db.Ping(); err != nil {
-		return nil, err
-	}
+	Db.SetMaxOpenConns(25)
+	Db.SetMaxIdleConns(5)
+	Db.SetConnMaxLifetime(time.Hour)
 
-	return db, nil
+	log.Println("Connected to the database... ")
+
+	return Db, nil
 }
