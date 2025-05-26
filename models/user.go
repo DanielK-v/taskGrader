@@ -1,15 +1,17 @@
 package models
 
-import "github.com/DanielK_v/taskGrader/services/database"
+import (
+	"github.com/DanielK_v/taskGrader/services/database"
+)
 
 type User struct {
-	Id       int    
+	Id       int64
 	Username string `json:"username" binding:"required,min=3"`
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required,min=6"`
 }
 
-func New(id int, username, password, email string) *User {
+func NewUser(id int64, username, password, email string) *User {
 	return &User{
 		Id:       id,
 		Username: username,
@@ -21,14 +23,14 @@ func New(id int, username, password, email string) *User {
 func AddUser(user User) (*User, error) {
 	_, err := database.Db.Exec(
 		"INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-		 user.Username,
-		 user.Email,
-		 user.Password,
+		user.Username,
+		user.Email,
+		user.Password,
 	)
 
 	if err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
 
 	return &user, nil
 }
@@ -57,4 +59,17 @@ func GetAllUsers() ([]User, error) {
 	}
 
 	return users, nil
+}
+
+func GetUserByEmail(email string) (*User, error) {
+	row := database.Db.QueryRow("SELECT * FROM `users` WHERE Email = ?", email)
+
+	var user User
+	err := row.Scan(&user.Id, &user.Username, &user.Email, &user.Password)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }

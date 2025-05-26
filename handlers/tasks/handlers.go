@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/DanielK_v/taskGrader/models/tasks"
+	"github.com/DanielK_v/taskGrader/models"
 )
 
 func GetAllTasks(context *gin.Context) {

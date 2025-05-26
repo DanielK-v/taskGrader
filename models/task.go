@@ -13,7 +13,7 @@ type Task struct {
 }
 
 
-func New(id uint64, name string, rating uint64) *Task {
+func NewTask(id uint64, name string, rating uint64) *Task {
 	return &Task{
 		Id:     id,
 		Name:   name,

@@ -25,6 +25,7 @@ func main() {
 
 	router.GET("/users", userHandler.GetAllUsers)
 	router.POST("/register", userHandler.Register)
+	router.POST("/login", userHandler.Login)
 
 	router.Run()
 
